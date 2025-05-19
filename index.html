@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SimuJudi - Edukasi Judi</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { font-family: sans-serif; text-align: center; background: #f5f5f5; padding: 20px; }
+    .slot-box { display: flex; justify-content: center; gap: 10px; font-size: 2em; margin: 20px 0; }
+    .slot { width: 60px; height: 60px; background: white; border: 2px solid #ccc; line-height: 60px; }
+    button { padding: 10px 20px; font-size: 1em; cursor: pointer; }
+    .result, .coins, .info { margin-top: 20px; }
+    canvas { max-width: 600px; margin: 30px auto; }
+  </style>
+</head>
+<body>
+  <h1>SimuJudi - Simulasi Slot untuk Edukasi</h1>
+  <div class="coins">Koin Anda: <span id="coins">100</span></div>
+  <div class="slot-box">
+    <div class="slot" id="slot1">?</div>
+    <div class="slot" id="slot2">?</div>
+    <div class="slot" id="slot3">?</div>
+  </div>
+  <button onclick="spin()">Putar</button>
+  <div class="result" id="result"></div>
+  <canvas id="profitChart"></canvas>
+  <div class="info">
+    <p><strong>Catatan:</strong> Ini hanya simulasi. Dalam jangka panjang, sistem selalu unggul dan pemain kalah.</p>
+  </div>
+  <script>
+    let coins = 100;
+    let history = [100];
+    let spins = [0];
+    const ctx = document.getElementById('profitChart').getContext('2d');
+    const chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: spins,
+        datasets: [{
+          label: 'Koin dari Waktu ke Waktu',
+          data: history,
+          borderColor: 'rgba(75, 192, 192, 1)',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        scales: {
+          x: { title: { display: true, text: 'Jumlah Putaran' }},
+          y: { title: { display: true, text: 'Jumlah Koin' }}
+        }
+      }
+    });
+    function getRandomSymbol() {
+      const symbols = ['🍒', '🔔', '🍋', '⭐', '💎'];
+      return symbols[Math.floor(Math.random() * symbols.length)];
+    }
+    function spin() {
+      if (coins <= 0) {
+        alert("Koin Anda habis! Mulai ulang atau pelajari mengapa judi merugikan.");
+        return;
+      }
+      coins -= 10;
+      let s1 = getRandomSymbol();
+      let s2 = getRandomSymbol();
+      let s3 = getRandomSymbol();
+      document.getElementById("slot1").textContent = s1;
+      document.getElementById("slot2").textContent = s2;
+      document.getElementById("slot3").textContent = s3;
+      if (s1 === s2 && s2 === s3) {
+        document.getElementById("result").textContent = "Selamat! Anda menang 50 koin!";
+        coins += 50;
+      } else {
+        document.getElementById("result").textContent = "Sayang sekali, Anda kalah.";
+      }
+      document.getElementById("coins").textContent = coins;
+      history.push(coins);
+      spins.push(spins.length);
+      chart.update();
+    }
+  </script>
+</body>
+</html>
